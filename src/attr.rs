@@ -330,6 +330,23 @@ pub enum Nl80211RateInfo {
     RateInfo160MhzWidth = 10,
     RateInfo10MhzWidth = 11,
     RateInfo5MhzWidth = 12,
+    RateInfoHeMcs = 13,
+    RateInfoHeNss = 14,
+    RateInfoHeGi = 15,
+    RateInfoHeDcm = 16,
+    RateInfoHeRuAlloc = 17,
+    RateInfo320MhzWidth = 18,
+    RateInfoEhtMcs = 19,
+    RateInfoEhtNss = 20,
+    RateInfoEhtGi = 21,
+    RateInfoEhtRuAlloc = 22,
+    RateInfoS1gMcs = 23,
+    RateInfoS1gNss = 24,
+    RateInfo1MhzWidth = 25,
+    RateInfo2MhzWidth = 26,
+    RateInfo4MhzWidth = 27,
+    RateInfo8MhzWidth = 28,
+    RateInfo16MhzWidth = 29,
 }
 
 impl NlAttrType for Nl80211RateInfo {}
