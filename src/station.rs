@@ -29,6 +29,14 @@ pub struct Station {
     pub tx_packets: Option<u32>,
     /// Total retries (MPDUs) to this station
     pub tx_retries: Option<u32>,
+    /// High Throughput Modulation and Coding Scheme (HT-MCS) (802.11n)
+    pub ht_mcs: Option<u8>,
+    /// Very High Throughput Modulation and Coding Scheme (VHT-MCS) (802.11ac)
+    pub vht_mcs: Option<u8>,
+    /// High Efficiency Modulation and Coding Scheme. (HE-MCS) (802.11ax)
+    pub he_mcs: Option<u8>,
+    /// Extremely High Throughput-Modulation and Coding Scheme (EHT-MCS) (802.11be)
+    pub eht_mcs: Option<u8>,
 }
 
 impl TryFrom<Attrs<'_, Nl80211Attr>> for Station {
@@ -73,11 +81,31 @@ impl TryFrom<Attrs<'_, Nl80211Attr>> for Station {
                         }
                     }
                     Nl80211StaInfo::StaInfoTxBitrate => {
-                        if let Some(rate) = attr
-                            .get_attr_handle::<Nl80211RateInfo>()?
-                            .get_attribute(Nl80211RateInfo::RateInfoBitrate32)
+                        let rate_info = attr.get_attr_handle::<Nl80211RateInfo>()?;
+                        if let Some(rate) =
+                            rate_info.get_attribute(Nl80211RateInfo::RateInfoBitrate32)
                         {
                             res.tx_bitrate = Some(rate.get_payload_as()?);
+                        }
+
+                        if let Some(ht_mcs) = rate_info.get_attribute(Nl80211RateInfo::RateInfoMcs)
+                        {
+                            res.ht_mcs = ht_mcs.get_payload_as().ok();
+                        }
+                        if let Some(vht_mcs) =
+                            rate_info.get_attribute(Nl80211RateInfo::RateInfoVhtMcs)
+                        {
+                            res.vht_mcs = vht_mcs.get_payload_as().ok();
+                        }
+                        if let Some(he_mcs) =
+                            rate_info.get_attribute(Nl80211RateInfo::RateInfoHeMcs)
+                        {
+                            res.he_mcs = he_mcs.get_payload_as().ok();
+                        }
+                        if let Some(eht_mcs) =
+                            rate_info.get_attribute(Nl80211RateInfo::RateInfoEhtMcs)
+                        {
+                            res.eht_mcs = eht_mcs.get_payload_as().ok();
                         }
                     }
                     _ => (),
@@ -231,6 +259,10 @@ mod tests_station {
             tx_failed: Some(u32::from_le_bytes([47, 0, 0, 0])),
             tx_packets: Some(u32::from_le_bytes([9, 170, 2, 0])),
             tx_retries: Some(u32::from_le_bytes([27, 130, 0, 0])),
+            ht_mcs: Some(13),
+            vht_mcs: None,
+            he_mcs: None,
+            eht_mcs: None,
         };
 
         assert_eq!(station, expected_station)
