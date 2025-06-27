@@ -13,8 +13,8 @@ default = []
 async = ["neli/async"]
 
 [dependencies]
-neli = { version = "0.7.0-rc3", git = "https://github.com/jbaublitz/neli.git" }
-neli-proc-macros = { version = "0.2.0-rc3", git = "https://github.com/jbaublitz/neli.git" }
+neli = "0.7"
+neli-proc-macros = "0.2"
 
 [dev-dependencies]
 neli-wifi = { path = ".", features = ["async"] }
