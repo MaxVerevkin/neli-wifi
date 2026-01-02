@@ -1,4 +1,5 @@
 use crate::attr::{Attrs, Nl80211Attr};
+use crate::Nl80211Iftype;
 
 use neli::attr::Attribute;
 use neli::err::DeError;
@@ -25,6 +26,8 @@ pub struct Interface {
     pub phy: Option<u32>,
     /// Wireless device identifier, used for pseudo-devices that don't have a netdev
     pub device: Option<u64>,
+    /// Interface operating mode (station, AP, monitor, etc.)
+    pub iftype: Option<Nl80211Iftype>,
 }
 
 impl TryFrom<Attrs<'_, Nl80211Attr>> for Interface {
@@ -57,6 +60,9 @@ impl TryFrom<Attrs<'_, Nl80211Attr>> for Interface {
                 }
                 Nl80211Attr::AttrWiphy => res.phy = Some(attr.get_payload_as()?),
                 Nl80211Attr::AttrWdev => res.device = Some(attr.get_payload_as()?),
+                Nl80211Attr::AttrIftype => {
+                    res.iftype = Some(attr.get_payload_as()?);
+                }
                 _ => (),
             }
         }
@@ -112,6 +118,7 @@ mod test_interface {
             power: Some(u32::from_le_bytes([164, 6, 0, 0])),
             phy: Some(u32::from_le_bytes([0, 0, 0, 0])),
             device: Some(u64::from_le_bytes([1, 0, 0, 0, 0, 0, 0, 0])),
+            iftype: Some(Nl80211Iftype::IftypeStation),
         };
 
         assert_eq!(interface, expected_interface)
