@@ -37,6 +37,8 @@ pub struct Station {
     pub he_mcs: Option<u8>,
     /// Extremely High Throughput-Modulation and Coding Scheme (EHT-MCS) (802.11be)
     pub eht_mcs: Option<u8>,
+    /// Ultra High Reliability Modulation and Coding Scheme (UHR-MCS) (802.11bn)
+    pub uhr_mcs: Option<u8>,
 }
 
 impl TryFrom<Attrs<'_, Nl80211Attr>> for Station {
@@ -106,6 +108,11 @@ impl TryFrom<Attrs<'_, Nl80211Attr>> for Station {
                             rate_info.get_attribute(Nl80211RateInfo::RateInfoEhtMcs)
                         {
                             res.eht_mcs = eht_mcs.get_payload_as().ok();
+                        }
+                        if let Some(uhr_mcs) =
+                            rate_info.get_attribute(Nl80211RateInfo::RateInfoUhrMcs)
+                        {
+                            res.uhr_mcs = uhr_mcs.get_payload_as().ok();
                         }
                     }
                     _ => (),
@@ -263,6 +270,7 @@ mod tests_station {
             vht_mcs: None,
             he_mcs: None,
             eht_mcs: None,
+            uhr_mcs: None,
         };
 
         assert_eq!(station, expected_station)
