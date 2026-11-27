@@ -347,6 +347,7 @@ pub enum Nl80211RateInfo {
     RateInfo4MhzWidth = 27,
     RateInfo8MhzWidth = 28,
     RateInfo16MhzWidth = 29,
+    RateInfoUhrMcs = 30,
 }
 
 impl NlAttrType for Nl80211RateInfo {}
